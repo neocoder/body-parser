@@ -406,6 +406,26 @@ app.use(bodyParser.raw({ type: 'application/vnd.custom-type' }))
 app.use(bodyParser.text({ type: 'text/html' }))
 ```
 
+### JSON body request preprocessor
+
+This functionality was added to handle some malformed JSON request which cannot
+be fixed on the client side.
+
+```js
+app.use(
+  bodyParser.json({
+    limit: '20mb',
+    preprocess: function(body) {
+      // Ex. fix broken double-quote escaping in specific json request
+      return body.replace(/"anchor":"(.*?)"}/g, function(str, p1) {
+        return '"anchor":"' + p1.replace(/"/g, '\\"') + '"}';
+      });
+    }
+  })
+);
+```
+
+
 ## License
 
 [MIT](LICENSE)
